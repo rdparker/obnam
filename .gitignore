@@ -1,4 +1,10 @@
+*.pyc
+*.so
+*~
+.coverage
+client-[0-9]*.*
 manual/*.html
 manual/*.pdf
+obnam.1.txt
 yarns/*.html
 yarns/*.pdf

@@ -1,4 +1,5 @@
 # Copyright (C) 2009-2014  Lars Wirzenius
+# Copyright (C) 2014  Ron Parker <rdparker@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -171,6 +172,7 @@ from metadata import (
     SetMetadataError,
     metadata_fields)
 from fmt_6.repo_fmt_6 import RepositoryFormat6
+from fmt_6.repo_fmt_6 import RepositoryFormat6Sha256
 from fmt_6.repo_tree import RepositoryTree
 from fmt_6.chunklist import ChunkList
 from fmt_6.clientlist import ClientList

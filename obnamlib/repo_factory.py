@@ -1,4 +1,5 @@
 # Copyright 2013-2014  Lars Wirzenius
+# Copyright 2014  Ron Parker <rdparker@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,6 +50,7 @@ class RepositoryFactory(object):
         # So we create it when the factory object is initialised instead.
         self._implementations = [
             obnamlib.RepositoryFormat6,
+            obnamlib.RepositoryFormat6Sha256,
             ]
 
     def setup_hooks(self, hooks): # pragma: no cover

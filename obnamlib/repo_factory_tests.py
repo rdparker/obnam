@@ -1,4 +1,5 @@
 # Copyright 2013  Lars Wirzenius
+# Copyright 2014  Ron Parker <rdparker@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,8 +52,23 @@ class RepositoryFormatTests(unittest.TestCase):
         repo = factory.open_existing_repo(fs)
         self.assertTrue(isinstance(repo, good))
 
+    def test_accepts_good_format_sha256(self):
+        good = obnamlib.RepositoryFormat6Sha256
+        fs = obnamlib.LocalFS(self.repodir)
+        fs.write_file('metadata/format', good.format)
+        factory = obnamlib.RepositoryFactory()
+        repo = factory.open_existing_repo(fs)
+        self.assertTrue(isinstance(repo, good))
+
     def test_creates_a_new_repository(self):
         good = obnamlib.RepositoryFormat6
+        fs = obnamlib.LocalFS(self.repodir)
+        factory = obnamlib.RepositoryFactory()
+        repo = factory.create_repo(fs, good)
+        self.assertTrue(isinstance(repo, good))
+
+    def test_creates_a_new_repository_sha256(self):
+        good = obnamlib.RepositoryFormat6Sha256
         fs = obnamlib.LocalFS(self.repodir)
         factory = obnamlib.RepositoryFactory()
         repo = factory.create_repo(fs, good)
@@ -73,8 +89,25 @@ class RepositoryFormatTests(unittest.TestCase):
         repo = factory.create_repo(fs, good)
         self.assertTrue(isinstance(repo, good))
 
+    def test_create_repo_is_ok_with_existing_repo_sha256(self):
+        good = obnamlib.RepositoryFormat6Sha256
+        fs = obnamlib.LocalFS(self.repodir)
+        fs.write_file('metadata/format', good.format)
+        factory = obnamlib.RepositoryFactory()
+        repo = factory.create_repo(fs, good)
+        self.assertTrue(isinstance(repo, good))
+
     def test_create_repo_twice_is_ok(self):
         good = obnamlib.RepositoryFormat6
+        fs = obnamlib.LocalFS(self.repodir)
+        factory = obnamlib.RepositoryFactory()
+        repo = factory.create_repo(fs, good)
+        self.assertTrue(isinstance(repo, good))
+        repo2 = factory.create_repo(fs, good)
+        self.assertTrue(isinstance(repo2, good))
+
+    def test_create_repo_twice_is_ok_sha256(self):
+        good = obnamlib.RepositoryFormat6Sha256
         fs = obnamlib.LocalFS(self.repodir)
         factory = obnamlib.RepositoryFactory()
         repo = factory.create_repo(fs, good)

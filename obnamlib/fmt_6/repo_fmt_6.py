@@ -1,4 +1,5 @@
 # Copyright (C) 2009-2014  Lars Wirzenius
+# Copyright (C) 2014  Ron Parker <rdparker@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1074,6 +1075,52 @@ class RepositoryFormat6(obnamlib.RepositoryInterface):
                 self._fs, str(client_id), 'fsck-skip-per-client-b-trees')
         yield CheckBTree(self._fs, 'chunklist', 'fsck-skip-shared-b-trees')
         yield CheckBTree(self._fs, 'chunksums', 'fsck-skip-shared-b-trees')
+
+
+class RepositoryFormat6Sha256(RepositoryFormat6):
+
+    '''A class based upon RepositoryFormat6 which uses the longer sha256 hash.
+
+    This class allows for switching a repository over to the more
+    secure sha256 hash without requiring that preexisting md5 chunks
+    be rewritten.  Part of the motivation for this is that there are
+    known collisions for MD5 hashes and per Debian Bug#741707 md5
+    should no longer be used.
+
+    '''
+
+    format = '6sha256'
+
+    # Chunk indexes.
+    def _checksum(self, data):
+        return hashlib.sha256(data).hexdigest()
+
+    def validate_chunk_content(self, chunk_id):
+        if self._is_in_tree_chunk_id(chunk_id):  # pragma: no cover
+            gen_id, filename = self._unpack_in_tree_chunk_id(chunk_id)
+            client_name, gen_number = self._unpack_gen_id(gen_id)
+            client = self._open_client(client_name)
+            data = client.get_file_data(gen_number, filename)
+            expected = self.get_file_key(
+                gen_id, filename, obnamlib.REPO_FILE_MD5)
+            if len(expected) == 56:
+                checksum = hashlib.md5(data).hexdigest()
+            else:
+                checksum = hashlib.sha256(data).hexdigest()
+            return checksum == expected
+
+        try:
+            content = self.get_chunk_content(chunk_id)
+        except obnamlib.RepositoryChunkDoesNotExist:
+            return False
+        actual_checksum = self._checksum(content)
+        try:
+            expected_checksum = self._chunklist.get_checksum(chunk_id)
+        except KeyError:  # pragma: no cover
+            # Chunk is not in the checksum tree, so we cannot validate
+            # its checksum. We'll just assume it's OK.
+            return True
+        return actual_checksum == expected_checksum
 
 
 class CheckBTree(obnamlib.WorkItem): # pragma: no cover

@@ -1,4 +1,5 @@
 # Copyright (C) 2013-2014  Lars Wirzenius
+# Copyright (C) 2014  Ron Parker <rdparker@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,11 +25,17 @@ class RepositoryFormat6Tests(obnamlib.RepositoryInterfaceTests):
 
     def setUp(self):
         self.tempdir = tempfile.mkdtemp()
+        self.tempdir2 = tempfile.mkdtemp()
         fs = obnamlib.LocalFS(self.tempdir)
         self.hooks = obnamlib.HookManager()
         obnamlib.RepositoryFormat6.setup_hooks(self.hooks)
         self.repo = obnamlib.RepositoryFormat6(hooks=self.hooks)
+        fs2 = obnamlib.LocalFS(self.tempdir2)
+        self.hooks = obnamlib.HookManager()
+        obnamlib.RepositoryFormat6Sha256.setup_hooks(self.hooks)
+        self.repo2 = obnamlib.RepositoryFormat6Sha256(hooks=self.hooks)
         self.repo.set_fs(fs)
+        self.repo2.set_fs(fs2)
 
     def tearDown(self):
         shutil.rmtree(self.tempdir)

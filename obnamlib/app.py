@@ -1,4 +1,5 @@
 # Copyright (C) 2009-2014  Lars Wirzenius
+# Copyright (C) 2014  Ron Parker <rdparker@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -250,7 +251,7 @@ class App(cliapp.Application):
 
         if create:
             return self.repo_factory.create_repo(
-                repofs, obnamlib.RepositoryFormat6, **kwargs)
+                repofs, obnamlib.RepositoryFormat6Sha256, **kwargs)
         else:
             return self.repo_factory.open_existing_repo(repofs, **kwargs)
 

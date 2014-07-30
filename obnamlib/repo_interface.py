@@ -2007,6 +2007,43 @@ class RepositoryInterfaceTests(unittest.TestCase): # pragma: no cover
         ret = self.repo.validate_chunk_content(chunk_id)
         self.assertTrue(ret is False or ret is None)
 
+    def test_validate_chunk_content_returns_True_or_None_2(self):
+        if hasattr(self, 'repo256'):
+            try:
+                repo = self.repo
+                self.repo = self.repo256
+                self.setup_client()
+                chunk_id = self.repo.put_chunk_content('foochunk')
+                self.repo.lock_chunk_indexes()
+                token = self.repo.prepare_chunk_for_indexes('foochunk')
+                self.repo.put_chunk_into_indexes(chunk_id, token, 'fooclient')
+                self.repo.commit_chunk_indexes()
+                ret = self.repo.validate_chunk_content(chunk_id)
+                self.assertTrue(ret is True or ret is None)
+            except:
+                self.repo = repo
+                raise
+            self.repo = repo
+
+    def test_validate_chunk_content_returns_False_or_None_if_corrupted_2(self):
+        if hasattr(self, 'repo256'):
+            try:
+                repo = self.repo
+                self.repo = self.repo256
+                self.setup_client()
+                chunk_id = self.repo.put_chunk_content('foochunk')
+                self.repo.lock_chunk_indexes()
+                token = self.repo.prepare_chunk_for_indexes('foochunk')
+                self.repo.put_chunk_into_indexes(chunk_id, token, 'fooclient')
+                self.repo.commit_chunk_indexes()
+                self.repo.remove_chunk(chunk_id)
+                ret = self.repo.validate_chunk_content(chunk_id)
+                self.assertTrue(ret is False or ret is None)
+            except:
+                self.repo = repo
+                raise
+            self.repo = repo
+
     # Fsck.
 
     def test_returns_fsck_work_item(self):

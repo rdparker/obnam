@@ -1117,7 +1117,7 @@ class RepositoryFormat6Sha256(RepositoryFormat6):
         try:
             expected_checksum = self._chunklist.get_checksum(chunk_id)
         except KeyError:  # pragma: no cover
-            # Chunk is not in the checksum tree, so we cannot valide
+            # Chunk is not in the checksum tree, so we cannot validate
             # its checksum. We'll just assume it's OK.
             return True
         return actual_checksum == expected_checksum

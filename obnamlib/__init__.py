@@ -18,7 +18,7 @@
 import cliapp
 
 
-__version__ = '1.8'
+__version__ = '1.8.18.16'       # Customized version to indicate RP's build
 
 
 

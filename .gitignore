@@ -2,9 +2,11 @@
 *.so
 *~
 .coverage
+build/
 client-[0-9]*.*
 manual/*.html
 manual/*.pdf
+obnam.1
 obnam.1.txt
 yarns/*.html
 yarns/*.pdf
